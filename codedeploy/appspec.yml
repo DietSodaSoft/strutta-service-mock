@@ -1,0 +1,28 @@
+# http://docs.aws.amazon.com/codedeploy/latest/userguide/app-spec-ref.html
+
+version: 0.0
+os: linux
+files:
+  - source: app/schultzco-webservices.war
+    destination: /opt/bitnami/apache-tomcat/webapps/
+hooks:
+  ApplicationStop:
+    - location: deploy_hooks/100_stop-tomcat.sh
+      timeout: 1800
+      runas: root
+  BeforeInstall:
+    - location: deploy_hooks/200_uninstall-app.sh
+      timeout: 1800
+      runas: root
+  AfterInstall:
+    - location: deploy_hooks/300_tomcat-ownership.sh
+      timeout: 1800
+      runas: root
+  ApplicationStart:
+    - location: deploy_hooks/400_start-tomcat.sh
+      timeout: 1800
+      runas: root
+  ValidateService:
+    - location: deploy_hooks/500_verify-service.sh
+      timeout: 1800
+      runas: root

@@ -1,0 +1,22 @@
+machine:
+  environment:
+  java:
+    version: oraclejdk8
+
+
+test:
+  override:
+    - ./gradlew clean test
+    - mv build/reports/tests $CIRCLE_TEST_REPORTS/junit
+    - ./gradlew clean cobertura
+    - mv build/reports/cobertura $CIRCLE_TEST_REPORTS/cobertura
+    - ./gradlew clean build -x test
+
+deployment:
+  staging:
+    branch: master
+    codedeploy:
+      SchultzCoServicesJava:
+        deployment_group: schultzco-webservices-staging
+        deployment_config: CodeDeployDefault.OneAtATime
+
